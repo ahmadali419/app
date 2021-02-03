@@ -8,8 +8,8 @@
             <li class="breadcrumb-item"><a href="{{URL::to('/admin/home')}}">Dashboard</a></li>
             <li class="breadcrumb-item active"><a href="javascript:void(0)">Packages</a></li>
         </ol>
-        <!-- <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addPackage"
-            data-whatever="@addPackage">Add Package</button> -->
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addPackage"
+            data-whatever="@addPackage">Add Package</button>
         <!-- Add Category -->
         <div class="modal fade" id="addPackage" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
             aria-hidden="true">
@@ -22,8 +22,8 @@
                         </button>
                     </div>
 
-                    <form id="add_package" enctype="multipart/form-data">
                         <div class="modal-body">
+                    <form id="add_package" enctype="multipart/form-data">
                             <span id="msg"></span>
                             @csrf
                             <input type="hidden" name="package_id" id="packg_id" value="">
@@ -40,9 +40,9 @@
                                         <label for="package_validity" class="col-form-label">Package Validity:</label>
                                         <select name="package_validity" id="getpackage_validity" class="form-control">
                                             <option value="">Select Validity</option>
-                                            <option value="1">1 day</option>
-                                            <option value="10">10 day</option>
-                                            <option value="30">1 month</option>
+                                            <option value="6">6 days</option>
+                                            <option value="20">20 days</option>
+                                            <option value="26">26 days</option>
 
                                         </select>
                                     </div>
@@ -77,29 +77,14 @@
                             </div>
                             <div>
                                 <h3>Food Information
-                                    <div class="addButton float-right">
-                                        <button type="button" class="btn btn-success btn-lg"
-                                            onclick="adItem()">+</button>
-                                    </div>
+                                    
                                 </h3>
                             </div>
 
                             <div id="items">
 
                                 <div class="row" id="item-list">
-                                    <div class="col-3">
-                                        <div class="form-group">
-                                            <label for="">Food Category:</label>
-                                            <select name="food_category[0]" id="getfood_category"
-                                                class="form-control food-cat" onchange="changePrice(this.value,0)">
-                                                <option value="">Select Category</option>
-                                                <option value="Paid">Paid</option>
-                                                <option value="Free">Free</option>
-
-                                            </select>
-                                        </div>
-
-                                    </div>
+                                    
                                     <div class="col-3">
                                         <div class="form-group">
                                             <label for="image" class="col-form-label">Food Name:</label>
@@ -108,11 +93,11 @@
                                         </div>
 
                                     </div>
-                                    <div class="col-2">
+                                    <div class="col-3">
                                         <div class="form-group">
-                                            <label for="image" class="col-form-label">Food Price:</label>
-                                            <input type="number" class="form-control" name="food_price[0]"
-                                                id="food_price0" value="0">
+                                            <label for="image" class="col-form-label">Food Description:</label>
+                                            <input type="text" class="form-control" name="food_description[0]"
+                                                id="food_description">
                                         </div>
                                     </div>
                                     <div class="col-3">
@@ -123,7 +108,12 @@
                                             <input type="hidden" name="removeimg" id="removeimg">
                                         </div>
                                     </div>
-
+                                    <div class="col-3">
+                                    <div class="addButton mt-2">
+                                        <button type="button" class="btn btn-success btn-lg mt-4"
+                                            onclick="addItem()">+</button>
+                                    </div>
+                                    </div>
                                 </div>
                             </div>
 
@@ -190,7 +180,7 @@
             <span id="message"></span>
             <div class="card">
                 <div class="card-body">
-                    <h4 class="card-title">All Subscription Requests</h4>
+                    <h4 class="card-title">All Packages</h4>
                     <div class="table-responsive" id="table-display">
 
 
@@ -208,28 +198,107 @@
 <script>
 
 $(document).ready(function() {
-    SubscribeTable();
+    packageTable();
    
 
 
 });
-// $(document).on('click','.addButton',function(){
+var row =1;
+function addItem()
+{
+    let target = $('#items');
+    let html = ` <div class="row child_item-list">
+                                   
+                                    <div class="col-3">
+                                        <div class="form-group">
+                                            <label for="image" class="col-form-label">Food Name:</label>
+                                            <input type="text" class="form-control" name="food_name[0]"
+                                                id="food_name">
+                                        </div>
+                                    </div>
+                                    <div class="col-3">
+                                        <div class="form-group">
+                                            <label for="image" class="col-form-label">Food Description:</label>
+                                            <input type="text" class="form-control" name="food_description[0]"
+                                                id="food_price0" >
+                                        </div>
+                                    </div>
+                                    <div class="col-3">
+                                        <div class="form-group">
+                                            <label for="image" class="col-form-label">Image:</label>
+                                            <input type="file" class="form-control" name="food_image[0]"
+                                                id="food_image[0]">
+                                            <input type="hidden" name="removeimg" id="removeimg">
+                                        </div>
+                                    </div>
+                                    <div class="col-1 mt-2">
+                                    <button type="button" class="btn btn-danger  mt-4 btn-lg"
+                                            onclick="removeItem(this)"><i class="fa fa-trash"></i></button>
+                                    </div>
+                                </div>`;
+                                target.append(html);
+                                row++;
+}
+function removeItem(thisis){
+				
+				thisis.closest('div.child_item-list').remove();
+				
 
 
-// //   alert('yes');
-//     // $("#item-list").clone().appendTo("#items");
-//     // $('#dlticon').show();   
+			}
 
-//     // $('#dlticon').append(`<button class="btn btn-danger btn-sm"><i class="fa fa-trash"></i></button>`)
-
-// });
-function SubscribeTable() {
+            $('#add-package').on('click', function(event){
+        event.preventDefault();
+        var form = document.getElementById('add_package');
+        var form_data = new FormData(form);
+        $('#preloader').show();
+        $.ajax({
+            headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+            url:"{{ URL::to('admin/packages/store') }}",
+            method:"POST",
+            data:form_data,
+            cache: false,
+            contentType: false,
+            processData: false,
+            dataType: "json",
+            success: function(result) {
+                $("#preloader").hide();
+                var msg = '';
+                if(result.error.length > 0)
+                {
+                    for(var count = 0; count < result.error.length; count++)
+                    {
+                        msg += '<div class="alert alert-danger">'+result.error[count]+'</div>';
+                    }
+                    $('#msg').html(msg);
+                    setTimeout(function(){
+                      $('#msg').html('');
+                    }, 5000);
+                }
+                else
+                {
+                    msg += '<div class="alert alert-success mt-1">'+result.success+'</div>';
+                    packageTable();
+                    $('#message').html(msg);
+                    $("#addPackage").modal('hide');
+                    $("#add_package").reset();
+                    $('.gallery').html('');
+                    setTimeout(function(){
+                      $('#message').html('');
+                    }, 5000);
+                }
+            },
+        })
+    });
+function packageTable() {
     // alert('yes');return;
     $.ajax({
         url: "{{ URL::to('admin/packages/list') }}",
         method: 'get',
         success: function(data) {
-            // console.log(data);
+            console.log(data);
             $('#table-display').html(data);
             $(".zero-configuration").DataTable()
         }
@@ -252,7 +321,7 @@ function updatePackageStatus(status, id)
             if (response == 1) {
                 msg += `<div class="alert alert-success mt-1"> Updated Successfully!
                         </div>`;
-                        SubscribeTable();
+                        packageTable();
                     $('#message').html(msg);
                               
                         } else {
@@ -262,7 +331,7 @@ function updatePackageStatus(status, id)
         }
 );
 }
-function StatusUpdate(id,user_id, status) {
+function StatusUpdate(id,status) {
     swal({
             title: "Are you sure?",
             text: "Do you want to delete this Package Subscription?",
@@ -284,11 +353,11 @@ function StatusUpdate(id,user_id, status) {
                     url: "{{ URL::to('admin/packages/status') }}",
                     data: {
                         id: id,
-                        user_id:user_id,
                         status: status
                     },
                     method: 'POST',
                     success: function(response) {
+                        
                         if (response == 1) {
                             swal({
                                     title: "Approved!",
@@ -303,7 +372,7 @@ function StatusUpdate(id,user_id, status) {
                                 function(isConfirm) {
                                     if (isConfirm) {
                                         swal.close();
-                                        PackageTable();
+                                        packageTable();
                                     }
                                 });
                         } else {

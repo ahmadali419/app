@@ -57,6 +57,11 @@
             </li>
             <li>
                 <a href="{{URL::to('/admin/packages')}}" aria-expanded="false">
+                <i class="fa fa-bell"></i><span class="nav-text">Packages</span>
+                </a>
+            </li>
+            <li>
+                <a href="{{URL::to('/admin/subscirbepackages')}}" aria-expanded="false">
                 <i class="fa fa-bell"></i><span class="nav-text">Package Subscriptions</span>
                 </a>
             </li>

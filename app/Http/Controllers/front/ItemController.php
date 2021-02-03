@@ -282,7 +282,7 @@ class ItemController extends Controller
         // print_r($getDate);exit;
         $user_id = Session::get('id');
         $getitem    =      new Item;
-        $getItemDays = Item::all()->where('cat_id','=',$product_id);
+        $getItemDays = Package::all()->where('package_id','=',$product_id);
         // print_r($getItemDays);exit;
 
             

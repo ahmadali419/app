@@ -127,10 +127,8 @@ class UserController extends Controller
                 $user->type ='2';
                 $user->password =Hash::make($request->password);
                
-                if($user->save())
-                {
-                    echo "yes";exit;
-                }
+                $user->save();
+              
 
                 session ( [
                     'email' => $request->email,

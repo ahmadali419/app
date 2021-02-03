@@ -1,60 +1,62 @@
 <?php
 
 namespace App\Http\Controllers;
+use Illuminate\Support\Facades\DB;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Package;
 use App\PackageCategory;
+use App\About;
+use Session;
 use Validator;
 class PackagesController extends Controller
 {
-    //
+    
     public function index()
     {
         return view('packages');
     }
-    public function store(Request $request)
+    public function show(Request $request)
     {
-
+        $getpackages = Package::where('is_available','=','0')->get();
+        $getpackage = Package::where(['package_id'=>$request->id,'is_available'=>0])->get();
         
-        print_r($request->package_name);exit;
-        $validation = Validator::make($request->all(),[
-            'package_name' => ['required'],
-            'package_validity' => ['required'],
-            'meals'=> ['required'],
-            'package_image'=>'required|image|mimes:jpeg,png,jpg',
-        ]);
-        $error_array = array();
-        $success_output = '';
-        if ($validation->fails())
-        {
-            foreach($validation->messages()->getMessages() as $field_name => $messages)
-            {
-                $error_array[] = $messages;
-            }
-        }
-        else
-        {
-            // $image = 'category-' . uniqid() . '.' . $request->image->getClientOriginalExtension();
-            // $request->image->move('public/images/category', $image);
 
-            $package = new Package;
-            // $category->image =$image;
-            $package->package_name =htmlspecialchars($request->package_name, ENT_QUOTES, 'UTF-8');
-            $package->package_validity =htmlspecialchars($request->package_validity, ENT_QUOTES, 'UTF-8');
-            $package->meals =htmlspecialchars($request->meals, ENT_QUOTES, 'UTF-8');
-            print_r($package->package_name );exit;
-            $package->save();
-            $success_output = 'Package Added Successfully!';
-        }
-        $output = array(
-            'error'     =>  $error_array,
-            'success'   =>  $success_output
-        );
-        echo json_encode($output);
+       
+        $getabout = About::where('id','=','1')->first();
+        $user_id  = Session::get('id');
+        $subsRequest = DB::table('subscription_request')->where('user_id',Session::get('id'))->get();
+ 
+        return view('front.packages', compact('getpackages','getpackage','getabout','subsRequest'));
+       
+                // print_r($getabout);exit;
+
+   echo "yes";
+        
+       print_r($request->id);exit;
     }
 
+    public function packageDetails(Request $request)
+    {
+
+        $user_id  = Session::get('id');
+        $getabout = About::where('id', '=', '1')->first();
+        $packages = Package::with("categories")->where(['package_id'=>$request->id])->get();
+        // dd($packages->toArray());
+        // $getPackage = Package::where('package_id',$request->id)->first();
+        // $getPackageDetail = DB::table('packages as p')
+        //     ->join('package_category as pc', 'p.package_id', '=', 'pc.package_id')
+        //     ->select('pc.*', 'p.*')
+        //     ->where(['p.package_id'=>$request->id,'pc.package_id'=>$request->id])
+        //     ->get();
+        $subsRequest = DB::table('subscription_request')->where('user_id',Session::get('id'))->get();
+
+            return view('front.package-details', compact('packages', 'getabout','subsRequest'));
+
+    //    echo "<pre>"; dd($getPackageDetail);exit;
+       
+    }
     public function status(Request $request)
     {
         $package = Package::where('package_id', $request->id)->update( array('is_available'=>$request->status) );

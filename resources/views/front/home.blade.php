@@ -1,11 +1,12 @@
 @include('front.theme.header')
 
     <div class="list-of-packages">
-    @foreach ($getcategory as $category)
+    <h3>Packages</h3>
+    @foreach ($getpackage as $package)
                     <li>
-                    <a href="{{URL::to('/product/'.$category->id)}}" class=" @if (request()->id == $category->id) active @endif">
+                    <a href="{{URL::to('packages/'.$package->package_id)}}" class=" @if (request()->id == $package->package_id) active @endif">
                        
-                        {{$category->category_name}}
+                        {{$package->package_name}}
                     </a>
                     </li>
                     @endforeach

@@ -39,7 +39,7 @@
             {{$package->item_description}}
             </td>
             <td>    
-             <select  onchange="updatePackageStatus(this.value,<?= $package->product_id?>)">
+             <select  onchange="updatePackageStatus(this.value,<?php echo $package->user_id ?>,<?= $package->product_id?>)">
               <option value="Request initiate"  <?=$package->status=='Request initiate' ? 'selected': ''?>>Initiate</option>
               <option value="Request Approved" <?=$package->status=='Request Approved' ? 'selected': ''?>>Approved</option>
              </select>

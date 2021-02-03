@@ -12,6 +12,7 @@ use App\Ratting;
 use App\Contact;
 use App\Order;
 use App\Promocode;
+use App\Package;
 
 class HomeController extends Controller
 {
@@ -38,6 +39,7 @@ class HomeController extends Controller
     public function index()
     {
         $getcategory = Category::all();
+        $getpackage = Package::all();
         $getitems = Item::all();
         $addons = Addons::all();
         $getreview = Ratting::all();
@@ -50,6 +52,6 @@ class HomeController extends Controller
         $contact = Contact::all();
         $getdriver = User::where('type','3')->get();
         $todayorders = Order::with('users')->select('order.*','users.name')->leftJoin('users', 'order.driver_id', '=', 'users.id')->where('order.created_at','LIKE','%' .date("Y-m-d") . '%')->get();
-        return view('home',compact('getcategory','getitems','addons','getusers','driver','contact','getreview','getorders','order_total','order_tax','getpromocode','todayorders','getdriver'));
+        // return view('home',compact('getcategory','getitems','addons','getpackage','getusers','driver','contact','getreview','getorders','order_total','order_tax','getpromocode','todayorders','getdriver'));
     }
 }

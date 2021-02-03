@@ -39,6 +39,12 @@ Route::group(['namespace' => 'front'], function () {
 	Route::post('/cart/deletecartitem', 'CartController@deletecartitem');
 	Route::post('/cart/removepromocode', 'CartController@removepromocode');
 	Route::get('/cart/isopenclose', 'CartController@isopenclose');
+ 
+	Route::get('packages/{id}', [App\Http\Controllers\PackagesController::class, 'show'])->name('show'); 
+	Route::get('package-details/{id}', [App\Http\Controllers\PackagesController::class, 'packageDetails']); 
+
+
+
 
 	Route::get('/favorite', 'FavoriteController@index');
 
@@ -97,7 +103,7 @@ Route::group(['prefix' => 'admin', 'namespace' => 'admin'], function () {
 		Route::post('slider/update', 'SliderController@update');
 		Route::post('slider/destroy', 'SliderController@destroy');
 
-		Route::get('category', 'CategoryController@index');
+		Route::get('category', 'CategoryController@index')->name('category');
 		Route::post('category/store', 'CategoryController@store');
 		Route::get('category/list', 'CategoryController@list');
 		Route::post('category/show', 'CategoryController@show');
@@ -109,7 +115,14 @@ Route::group(['prefix' => 'admin', 'namespace' => 'admin'], function () {
 		Route::get('packages/list', [App\Http\Controllers\admin\PackagesController::class, 'list']);
 		Route::post('packages/status', [App\Http\Controllers\admin\PackagesController::class, 'status']);
 		Route::post('packages/show', [App\Http\Controllers\admin\PackagesController::class, 'show']);
-		Route::post('packages/update', [App\Http\Controllers\admin\PackagesController::class, 'update']);
+		Route::get('packages', [App\Http\Controllers\admin\PackagesController::class, 'index']);
+		Route::get('subscirbepackages', [App\Http\Controllers\admin\PackagesSubscribeController::class, 'index']);
+		Route::get('subscirbepackages/list', [App\Http\Controllers\admin\PackagesSubscribeController::class, 'list']);
+		Route::post('subscirbepackages/update', [App\Http\Controllers\admin\PackagesSubscribeController::class, 'update']);
+
+
+	    
+
 
 
 

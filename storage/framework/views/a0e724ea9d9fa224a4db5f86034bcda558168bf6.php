@@ -1,11 +1,12 @@
 <?php echo $__env->make('front.theme.header', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
 
     <div class="list-of-packages">
-    <?php $__currentLoopData = $getcategory; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $category): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+    <h3>Packages</h3>
+    <?php $__currentLoopData = $getpackage; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $package): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                     <li>
-                    <a href="<?php echo e(URL::to('/product/'.$category->id)); ?>" class=" <?php if(request()->id == $category->id): ?> active <?php endif; ?>">
+                    <a href="<?php echo e(URL::to('packages/'.$package->package_id)); ?>" class=" <?php if(request()->id == $package->package_id): ?> active <?php endif; ?>">
                        
-                        <?php echo e($category->category_name); ?>
+                        <?php echo e($package->package_name); ?>
 
                     </a>
                     </li>

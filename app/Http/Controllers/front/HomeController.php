@@ -14,6 +14,7 @@ use App\About;
 use App\Contact;
 use App\User;
 use App\Pincode;
+use App\Package;
 use Session;
 use Validator;
 
@@ -28,6 +29,8 @@ class HomeController extends Controller
     {
         
         $getslider = Slider::all();
+                     $getpackages =    new Package;
+        $getpackage = $getpackages->limit('5')->get();
         // print_r($getslider);exit
         $getcategory = Category::where('is_available','=','1')->get();
         $getabout = About::where('id','=','1')->first();
@@ -42,7 +45,7 @@ class HomeController extends Controller
         $getreview = Ratting::with('users')->get();
 
         $getbanner = Banner::orderby('id','desc')->get();
-        return view('front.home', compact('getslider','getcategory','getabout','getitem','getreview','getbanner'));
+        return view('front.home', compact('getslider','getcategory','getpackage','getabout','getitem','getreview','getbanner'));
     }
 
     public function contact(Request $request)
