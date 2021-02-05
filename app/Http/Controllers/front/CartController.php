@@ -25,12 +25,12 @@ class CartController extends Controller
     public function index() {
         $user_id  = Session::get('id');
         $getabout = About::where('id','=','1')->first();
-        $cartdata=Cart::with('itemimage')->select('cart.id','cart.qty','cart.price','cart.item_notes','item.item_name','cart.item_id','cart.addons_id')
-        ->join('item','cart.item_id','=','item.id')
+        $cartdata=Cart::with('packages')->select('cart.id','cart.qty','cart.price','cart.item_notes','pc.food_name','pc.item_image','food_description','cart.package_id','cart.category_id')
+        ->join('package_category as pc','cart.category_id','=','pc.category_id')
         ->where('cart.user_id',$user_id)
         ->where('cart.is_available','=','1')
         ->orderby('id','desc')->get();
-
+// echo"<pre>"; print_r($cartdata);exit;
         foreach ($cartdata as $value) {
            $arr = explode(',', $value['addons_id']);
            $value['addons']=Addons::whereIn('id',$arr)->get();

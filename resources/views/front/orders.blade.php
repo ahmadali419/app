@@ -11,7 +11,7 @@
             @else 
                 @foreach ($orderdata as $orders)
                 <div class="col-lg-4">
-                    <a href="{{URL::to('order-details/'.$orders->id)}}" class="order-box">
+                    <a href="#" class="order-box">
                         <div class="order-box-no">
                             {{$orders->date}}
                             <h4>Order Number : <span>{{$orders->order_number}}</span></h4>
@@ -27,7 +27,7 @@
                             @endif
                         </div>
                         <div class="order-box-price">
-                            <h5><?php echo env('CURRENCY'); ?>{{number_format($orders->total_price, 2)}}</h5>
+                            <h5><?php echo env('CURRENCY'); ?>{{number_format($orders->package_amount, 2)}}</h5>
                             @if($orders->payment_type == 1)
                                 <p>Razorpay</p>
                             @elseif($orders->payment_type == 2)

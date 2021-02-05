@@ -5,7 +5,7 @@
             <!-- <th>Image</th> -->
             <th>User Detail</th>
             <th>Package Detail</th>
-            <th>Item Detail</th>
+            <th>Validity Time Period</th>
             <th>Status</th>
             <th>Created at</th>
             <th>Action</th>
@@ -17,26 +17,24 @@
             foreach ($getSubscribepackages as $package) {
                 ?>
         <tr id="dataid{{$package->package_id}}">
-            <td>{{$package->product_id}}</td>
+            <td>{{$package->package_id}}</td>
             <!-- <td><img src='{!! asset("public/images/packages/".$package->image) !!}' class='img-fluid' style='max-height: 50px;'></td> -->
             <td>{{$package->name}}
             <br>
             {{$package->email}}
             <br>
-            {{$package->mobile  }}
+            {{$package->mobile}}
         
             </td>
             <td>
-            {{$package->category_name}}
+            {{$package->package_name}}
             <br>
-            {{$package->delivery_time}}
+            
             
 
             </td>
             <td>
-            {{$package->item_name}}<br>
-            {{$package->item_price}}<br>
-            {{$package->item_description}}
+            {{$package->package_validity}} day
             </td>
             <td>    
              <select  onchange="updatePackageStatus(this.value,<?php echo $package->user_id ?>,<?= $package->product_id?>)">
@@ -54,7 +52,7 @@
             
 
             <td>
-                
+               
                 <span>
                 <a href="#" class="badge badge-info px-2" onclick="StatusUpdate('<?php echo $package->product_id ?>','<?php echo $package->user_id ?>','2')" style="color: #fff;">Delete</a>
                 </span>

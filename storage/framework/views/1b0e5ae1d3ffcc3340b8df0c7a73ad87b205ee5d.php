@@ -7,7 +7,7 @@
         <div class="product-rev-wrap">
             <div class="cat-aside">
                 
-                <h3 class="text-center">Food Category</h3>
+                <h3 class="text-center">Food Packages</h3>
                 <div class="cat-aside-wrap">
                     <?php $__currentLoopData = $getpackages; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $package): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                     <a href="<?php echo e(URL::to('packages/'.$package->package_id)); ?>" class="cat-check border-top-no <?php if(request()->id == $package->package_id): ?> active <?php endif; ?>">

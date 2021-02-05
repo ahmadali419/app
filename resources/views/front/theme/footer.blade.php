@@ -284,23 +284,23 @@ aria-hidden="true">
     };
 	function AddtoCart(id,user_id) {
 
-		var price = $('#price').val();
+		// var price = $('#price').html();
 		var item_notes = $('#item_notes').val();
 
         var addons_id = ($('.Checkbox:checked').map(function() {
             return this.value;
         }).get().join(', '));
-        $('#preloader').show();
+		// alert(item_notes);return;
+        // $('#preloader').show();
 	    $.ajax({
 	        headers: {
 	            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
 	        },
 	        url:"{{ URL::to('/product/addtocart') }}",
 	        data: {
-	            item_id: id,
-	            addons_id: addons_id,
+				item_id: id,
+				addons_id:addons_id,
 	            qty: '1',
-	            price: price,
 	            item_notes: item_notes,
 	            user_id: user_id
 	        },

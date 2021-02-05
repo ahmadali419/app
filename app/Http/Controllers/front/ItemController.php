@@ -169,128 +169,139 @@ class ItemController extends Controller
 
     public function addtocart(Request $request)
     {
-        
+       
         if($request->item_id == ""){
             return response()->json(["status"=>0,"message"=>"Item is required"],400);
         }
         if($request->qty == ""){
             return response()->json(["status"=>0,"message"=>"Qty is required"],400);
         }
-        if($request->price == ""){
-            return response()->json(["status"=>0,"message"=>"Price is required"],400);
-        }
+      
         if($request->user_id == ""){
             return response()->json(["status"=>0,"message"=>"User ID is required"],400);
         }
 
         $data=Cart::where('cart.user_id',$request['user_id'])
-                ->where('cart.item_id', $request['item_id'])
-                ->where('cart.addons_id', $request['addons_id'])
+                ->where('cart.package_id', $request['item_id'])
+                // ->where('cart.addons_id', $request['addons_id'])
                 ->get()
                 ->first();
-        $getdata=User::select('max_order_qty','min_order_amount','max_order_amount')->where('type','1')
-        ->get()->first();
+            //    print_r($data->category_id);exit;
+        // $getdata=User::select('max_order_qty','min_order_amount','max_order_amount')->where('type','1')
+        // ->get()->first();
             try {
                 if($data!="") {
-
-                if (@$data->addons_id == $request['addons_id']) {
+                // print_r($data->addons_id);exit;
+                if ($data->category_id == $request['addons_id']) {
                     if ($request['qty'] == "") {
                         $qty = $data->qty+'1';
+                        // print_r($qty);exit;
                     } else {
                         $qty = $data->qty+$request['qty'];
                     }
 
-                    if ($request['qty'] == "") {
-                        $price = $request->price*($data->qty+'1');
-                    } else {
-                        $price = $request->price+$data->price;
-                    }
+                    // if ($request['qty'] == "") {
+                    //     $price = $request->price*($data->qty+'1');
+                    // } else {
+                    //     $price = $request->price+$data->price;
+                    // }
 
-                    if ($getdata->max_order_qty < $qty) {
-                      return response()->json(['status'=>0,'message'=>"You've reached the maximum units allowed for the purchase of this item"],200);
-                    }
+                    // if ($getdata->max_order_qty < $qty) {
+                    //   return response()->json(['status'=>0,'message'=>"You've reached the maximum units allowed for the purchase of this item"],200);
+                    // }
 
                   $result = DB::table('cart')
                   ->where('cart.user_id',$data['user_id'])
-                  ->where('cart.item_id', $data['item_id'])
-                  ->where('cart.addons_id', $data['addons_id'])
+                  ->where('cart.package_id', $data['item_id'])
+                  ->where('cart.category_id', $data['addons_id'])
                   ->where('cart.id', $data['id'])
                   ->update([
                       'qty' => $qty,
-                      'price' => $price,
                       'item_notes' => $request->item_notes,
                   ]);
+                  
                   return response()->json(['status'=>1,'message'=>'Qty has been update'],200);
 
-                } elseif (@$data->addons_id == "" && $request['addons_id'] == "") {
+                } elseif (@$data->package_id == "" && $request['addons_id'] == "") {
                     if ($request['qty'] == "") {
                         $qty = $data->qty+'1';
                     } else {
                         $qty = $data->qty+$request['qty'];
                     }
 
-                    if ($request['qty'] == "") {
-                        $price = $request->price*($data->qty+'1');
-                    } else {
-                        $price = $request->price+$data->price;
-                    }
+                    // if ($request['qty'] == "") {
+                    //     $price = $request->price*($data->qty+'1');
+                    // } else {
+                    //     $price = $request->price+$data->price;
+                    // }
 
-                    if ($getdata->max_order_qty < $qty) {
-                      return response()->json(['status'=>0,'message'=>"You've reached the maximum units allowed for the purchase of this item"],200);
-                    }
+                    // if ($getdata->max_order_qty < $qty) {
+                    //   return response()->json(['status'=>0,'message'=>"You've reached the maximum units allowed for the purchase of this item"],200);
+                    // }
 
                   $result = DB::table('cart')
                   ->where('cart.user_id',$data['user_id'])
-                  ->where('cart.item_id', $data['item_id'])
+                  ->where('cart.package_id', $data['item_id'])
                   ->where('cart.id', $data['id'])
                   ->update([
                       'qty' => $qty,
-                      'price' => $price,
                   ]);
                   return response()->json(['status'=>1,'message'=>'Qty has been update'],200);
-
+       
                 }
                 } else {
                     $cart = new Cart;
-                    $cart->item_id =$request->item_id;
-                    $cart->addons_id =$request->addons_id;
-                    $cart->qty =$request->qty;
-                    $cart->price =$request->price;
+                    // print_r($cart);exit;
                     $cart->user_id =$request->user_id;
-                    $cart->item_notes =$request->item_notes;
-                    $cart->save();
+                    $cart->package_id =$request->item_id;
+                    $cart->category_id =$request->addons_id;
+                    $cart->qty = $request->qty;
+                    // print_r($cart->user_id);exit;
+                    // $cart->item_notes =$request->item_notes;
+                  $cart->save();
+                  
 
                     $count=Cart::where('user_id',$request->user_id)->count();
-
+                      print_r($count);exit;
                     Session::put('cart', $count);
                     return response()->json(['status'=>1,'message'=>'Item has been added to your cart','cartcnt'=>$count],200);
                 }
 
             } catch (\Exception $e){
 
-                return response()->json(['status'=>0,'message'=>'Something went wrong'],400);
+                return response()->json(['status'=>0,'message'=>'something went wrong'],400);
             }
     }
     
     public function subscribe(Request $request, $product_id,$days)
     {
-         
+        //  print_r($product_id);exit;
         $Date =date('Y-m-d');
         $endDate=date('Y-m-d', strtotime($Date. ' + '.$days. 'days'));
-       // $setDate=date('Y-m-d', strtotime($getDate. ' - 1 days'));
-      
-        // print_r($getDate);exit;
         $user_id = Session::get('id');
+        
         $getitem    =      new Item;
         $getItemDays = Package::all()->where('package_id','=',$product_id);
         // print_r($getItemDays);exit;
 
-            
+      
+       
+        
+        
+        $subscribed = DB::table('subscription_request')->select('status')->where(['product_id'=>$product_id,'user_id'=>$user_id])->get();
+     
         if ($user_id) {
+            if(!$subscribed)
+            {
+              DB::table('subscription_request')->where(['product_id'=>$product_id,'user_id'=>$user_id])->update(['action'=>0,'status'=>'Request initiate','start_date'=>$Date,'end_Date'=>$endDate]);
+              return Redirect::back()->with('message', 'Your request has been submited for subscription, you have been notify soon.');
+            }
+           else{
             $date    = Carbon::now()->toDateTimeString();
             DB::table('subscription_request')->insert([	'user_id'=>$user_id, 'product_id'=>$product_id, 'created_at'=>$date, 'action'=>0, 'status'=>"Request Initiate",'start_date'=>$Date,'end_date'=>$endDate]);
              
             return Redirect::back()->with('message', 'Your request has been submited for subscription, you have been notify soon.');
+           }
         }
         else{
             return redirect('signin');

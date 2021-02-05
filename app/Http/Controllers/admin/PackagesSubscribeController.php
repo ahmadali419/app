@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Package;
 use App\SubscribePackage;
+use App\PackageCategory;
 use App\User;
 use App\Item;
 use App\Category;
@@ -25,15 +26,15 @@ class PackagesSubscribeController extends Controller
     //   print_r($users);exit;
       $getpackages = $getPackage->join('subscription_request as sr', 'sr.user_id','=','sr.user_id')
       ->join('users as u','u.id','=','sr.user_id')
-      ->join('item as i','i.cat_id','=','sr.product_id')
-      ->select('sr.*', 'u.*','i.*')
+      ->join('package_category as ps','ps.package_id','=','sr.product_id')
+      ->select('sr.*', 'u.*','ps.*')
       ->where('sr.action',0)
       ->get();
-    //  echo "<pre>"; print_r($getpackages);
      return view('theme.subscribePackage');  
     }
    public function list()
    {
+    $today = date("Y-m-d H:i:s"); 
     $getPackage   =   new SubscribePackage;    
     $users              = new User;           
       $item            =       new Item;
@@ -42,13 +43,15 @@ class PackagesSubscribeController extends Controller
   //   print_r($users);exit;
     $getSubscribepackages = $getPackage->join('subscription_request as sr', 'sr.user_id','=','sr.user_id')
     ->join('users as u','u.id','=','sr.user_id')
-    ->join('item as i','i.cat_id','=','sr.product_id')
-    ->join('categories as c','c.id','=','i.cat_id')
-    ->select('sr.*', 'u.*','i.id As item_id','i.*','c.*')
+    ->join('packages as p','p.package_id','=','sr.product_id')
+    ->select('sr.*', 'u.*','p.*')
+    ->orderBy('sr.id', 'asc')
+    ->groupBy('sr.id')
+    ->get();
 
     // ->groupBy('sr.user_id')
-    ->get();
-    // echo "<pre>";print_r($getSubscribepackages);
+  
+    // echo "<pre>";print_r($getSubscribepackages);exit;    
     return view('theme.packageSubscribetable',compact('getSubscribepackages'));
    }
    public function update(Request $request)

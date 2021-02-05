@@ -26,12 +26,13 @@ class OrderController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index() {
+        // echo "yes";exit;
         $getabout = About::where('id','=','1')->first();
-        $orderdata=OrderDetails::select('order.order_total as total_price',DB::raw('SUM(order_details.qty) AS qty'),'order.id',DB::raw('DATE_FORMAT(order.created_at, "%d %M %Y") as date'),'order.order_number','order.status','order.payment_type')
-        ->join('item','order_details.item_id','=','item.id')
+        $orderdata=OrderDetails::select(DB::raw('SUM(order_details.qty) AS qty'),'order.id',DB::raw('DATE_FORMAT(order.created_at, "%d %M %Y") as date'),'order.order_number','order.status','order.payment_type','packages.package_name','packages.package_amount')
+        ->join('packages','order_details.item_id','=','packages.package_id')
         ->join('order','order_details.order_id','=','order.id')
         ->where('order.user_id',Session::get('id'))->groupBy('order_details.order_id')->orderby('order.id','desc')->paginate(9);
-
+    //  echo "<pre>";print_r($orderdata);exit;
         return view('front.orders',compact('orderdata','getabout'));
     }
 
@@ -41,6 +42,7 @@ class OrderController extends Controller
         ->join('item','order_details.item_id','=','item.id')
         ->join('order','order_details.order_id','=','order.id')
         ->where('order_details.order_id',$request->id)->get();
+        // print_r($orderdata);exit;
 
         if(count($orderdata) == 0){ 
             abort(404); 
@@ -92,18 +94,28 @@ class OrderController extends Controller
 
     public function cashondelivery(Request $request)
     {
+        $Date = date('Y-m-d');
+        // print_r($Date);exit;
+        $count = Order::where(['user_id'=>Session::get('id')])->whereRaw('DATE(created_at)',$Date)->count();
+        if($count>=2)
+        {
+            return response()->json(['status'=>0,'message'=>'You cannot order because you have reached your maximum...'],200);
+
+        }
+       else{
+            // print_r($request->order_type);exit;
         if ($request->order_type == "1") {
             if($request->address == ""){
                 return response()->json(["status"=>0,"message"=>"Address is required"],200);
             }
 
-            if($request->lat == ""){
-                return response()->json(["status"=>0,"message"=>"Please select the address from suggestion"],200);
-            }
+            // if($request->lat == ""){
+            //     return response()->json(["status"=>0,"message"=>"Please select the address from suggestion"],200);
+            // }
 
-            if($request->lang == ""){
-                return response()->json(["status"=>0,"message"=>"Please select the address from suggestion"],200);
-            }
+            // if($request->lang == ""){
+            //     return response()->json(["status"=>0,"message"=>"Please select the address from suggestion"],200);
+            // }
 
             if($request->postal_code == ""){
                 return response()->json(["status"=>0,"message"=>"Pincode is required"],200);
@@ -118,17 +130,17 @@ class OrderController extends Controller
             }
         } 
 
-        $getuserdata=User::where('id',Session::get('id'))
-        ->get()->first(); 
+        // $getuserdata=User::where('id',Session::get('id'))
+        // ->get()->first(); 
 
-        $getdata=User::select('min_order_amount','max_order_amount')->where('type','1')
-        ->get()->first();
+        // $getdata=User::select('min_order_amount','max_order_amount')->where('type','1')
+        // ->get()->first();
 
-        if ($request->discount_amount == "NaN") {
-            $discount_amount = "0.00";
-        } else {
-            $discount_amount = $request->discount_amount;
-        }     
+        // if ($request->discount_amount == "NaN") {
+        //     $discount_amount = "0.00";
+        // } else {
+        //     $discount_amount = $request->discount_amount;
+        // }     
 
         try {
 
@@ -137,14 +149,14 @@ class OrderController extends Controller
                 $order_number = substr(str_shuffle(str_repeat("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ", 10)), 0, 10);
 
                 if ($request->order_type == "2") {
-                    $delivery_charge = "0.00";
+                    
                     $address = "";
                     $lat = "";
-                    $lang = "";
+                    
                     $building = "";
                     $landmark = "";
                     $postal_code = "";
-                    $order_total = $request->order_total-$request->$delivery_charge;
+                    // $order_total = $request->order_total-$request->$delivery_charge;
                 } else {
                     $delivery_charge = $request->delivery_charge;
                     $address = $request->address;
@@ -156,34 +168,34 @@ class OrderController extends Controller
                     $postal_code = $request->postal_code;
                 }
 
-                if ($getdata->min_order_amount > $request->total_order) {
-                    return response()->json(['status'=>0,'message'=>"Order amount must be between ".env('CURRENCY')."".$getdata->min_order_amount." and ".env('CURRENCY')."".$getdata->max_order_amount.""],200);
-                }
+                // if ($getdata->min_order_amount > $request->total_order) {
+                //     return response()->json(['status'=>0,'message'=>"Order amount must be between ".env('CURRENCY')."".$getdata->min_order_amount." and ".env('CURRENCY')."".$getdata->max_order_amount.""],200);
+                // }
 
-                if ($getdata->max_order_amount < $request->total_order) {
-                    return response()->json(['status'=>0,'message'=>"Order amount must be between ".env('CURRENCY')."".$getdata->min_order_amount." and ".env('CURRENCY')."".$getdata->max_order_amount.""],200);
-                }
+                // if ($getdata->max_order_amount < $request->total_order) {
+                //     return response()->json(['status'=>0,'message'=>"Order amount must be between ".env('CURRENCY')."".$getdata->min_order_amount." and ".env('CURRENCY')."".$getdata->max_order_amount.""],200);
+                // }
 
                 $order = new Order;
                 $order->order_number =$order_number;
                 $order->user_id =Session::get('id');
-                $order->order_total =$order_total;
+                // $order->order_total =$order_total;
                 $order->payment_type ='0';
                 $order->status ='1';
                 $order->address =$address;
-                $order->promocode =$request->promocode;
-                $order->discount_amount =$discount_amount;
-                $order->discount_pr =$request->discount_pr;
-                $order->tax =$request->tax;
-                $order->tax_amount =$request->tax_amount;
-                $order->delivery_charge =$delivery_charge;
+                // $order->promocode =$request->promocode;
+                // $order->discount_amount =$discount_amount;
+                // $order->discount_pr =$request->discount_pr;
+                // $order->tax =$request->tax;
+                // $order->tax_amount =$request->tax_amount;
+                // $order->delivery_charge =$delivery_charge;
                 $order->order_type =$request->order_type;
-                $order->lat =$lat;
-                $order->lang =$lang;
+                // $order->lat =$lat;
+                // $order->lang =$lang;
                 $order->building =$building;
                 $order->landmark =$landmark;
                 $order->pincode =$postal_code;
-                $order->order_notes =$request->notes;
+                // $order->order_notes =$request->notes;
                 $order->order_from ='web';
 
                 $order->save();
@@ -191,54 +203,56 @@ class OrderController extends Controller
                 $order_id = DB::getPdo()->lastInsertId();
                 $data=Cart::where('cart.user_id',Session::get('id'))
                 ->get();
-                foreach ($data as $value) 
-                {
-                    $OrderPro = new OrderDetails;
-                    $OrderPro->order_id = $order_id;
-                    $OrderPro->user_id = $value['user_id'];
-                    $OrderPro->item_id = $value['item_id'];
-                    $OrderPro->price = $value['price'];
-                    $OrderPro->qty = $value['qty'];
-                    $OrderPro->item_notes = $value['item_notes'];
-                    $OrderPro->addons_id = $value['addons_id'];
-                    $OrderPro->save();
+                // print_r($data);exit;
+                // foreach ($data as $value) 
+                // {
+                //     $OrderPro = new OrderDetails;
+                //     $OrderPro->order_id = $order_id;
+                //     $OrderPro->user_id = $value['user_id'];
+                //     $OrderPro->item_id = $value['package_id'];
+                //     // $OrderPro->price = $value['price'];
+                //     $OrderPro->qty = $value['qty'];
+                //     $OrderPro->item_notes = $value['item_notes'];
+                //     $OrderPro->addons_id = $value['category_id'];
+                //     $OrderPro->save();
                     
-                    $product = DB::table('item')->select('meals', 'days')->where('id',  $value['item_id'])->get()->first();
-                    $days        = $product->days;
-                    $mealsPerDay = $product->meals;
-                    $dt          = Carbon::now();
+                //     $product = DB::table('item')->select('meals', 'days')->where('id',  $value['item_id'])->get()->first();
+                //     $days        = $product->days;
+                //     $mealsPerDay = $product->meals;
+                //     $dt          = Carbon::now();
                     
-                    for($i=0; $i<$days; $i++)
-                    {
-                        for($j=1; $j<=$mealsPerDay; $j++)
-                        {
-                            $validityDate = $dt->addDays($j);
-                            DB::table(meals)->insert(['user_id'=>$value['user_id'], 'product_id'=>$value['item_id'], 'validity_period'=>$validityDate, 'action'=>0, 'status'=>'Not Availed',]);    
-                        }
+                //     // for($i=0; $i<$days; $i++)
+                //     // {
+                //     //     for($j=1; $j<=$mealsPerDay; $j++)
+                //     //     {
+                //     //         $validityDate = $dt->addDays($j);
+                //     //         DB::table(meals)->insert(['user_id'=>$value['user_id'], 'product_id'=>$value['item_id'], 'validity_period'=>$validityDate, 'action'=>0, 'status'=>'Not Availed',]);    
+                //     //     }
                         
-                    }
+                //     // }
                     
-                    DB::table('subscription_request')->where([['user_id', $value['user_id']],['product_id', $value['item_id']],['action', 1] ])->update(['action'=>3, 'status'=>"Oder Placed"]);
-                }//end foreach
+                //     DB::table('subscription_request')->where([['user_id', $value['user_id']],['product_id', $value['item_id']],['action', 1] ])->update(['action'=>3, 'status'=>"Oder Placed"]);
+                // }//end foreach
                 
                 $cart=Cart::where('user_id', Session::get('id'))->delete();
 
                 $count=Cart::where('user_id',Session::get('id'))->count();
+                $getuserdata      =  User::where(['user_id'=>Session::get('id')]);
 
-                try{
-                    $ordermessage='Order "'.$order_number.'" has been placed';
-                    $email=$getuserdata->email;
-                    $name=$getuserdata->name;
-                    $data=['ordermessage'=>$ordermessage,'email'=>$email,'name'=>$name];
+                // try{
+                //     $ordermessage='Order "'.$order_number.'" has been placed';
+                //     $email=$getuserdata->email;
+                //     $name=$getuserdata->name;
+                //     $data=['ordermessage'=>$ordermessage,'email'=>$email,'name'=>$name];
 
-                    Mail::send('Email.orderemail',$data,function($message)use($data){
-                        $message->from(env('MAIL_USERNAME'))->subject($data['ordermessage']);
-                        $message->to($data['email']);
-                    } );
-                }catch(\Swift_TransportException $e){
-                    $response = $e->getMessage() ;
-                    return response()->json(['status'=>0,'message'=>'Something went wrong while sending email Please try again...'],200);
-                }
+                //     Mail::send('Email.orderemail',$data,function($message)use($data){
+                //         $message->from(env('MAIL_USERNAME'))->subject($data['ordermessage']);
+                //         $message->to($data['email']);
+                //     } );
+                // }catch(\Swift_TransportException $e){
+                //     $response = $e->getMessage() ;
+                //     return response()->json(['status'=>0,'message'=>'Something went wrong while sending email Please try again...'],200);
+                // }
                 
                 Session::put('cart', $count);
 
@@ -274,20 +288,14 @@ class OrderController extends Controller
                             $postal_code = $request->postal_code;
                         }
 
-                        if ($getdata->min_order_amount > $request->total_order) {
-                            return response()->json(['status'=>0,'message'=>"Order amount must be between ".env('CURRENCY')."".$getdata->min_order_amount." and ".env('CURRENCY')."".$getdata->max_order_amount.""],200);
-                        }
+                        // if ($getdata->min_order_amount > $request->total_order) {
+                        //     return response()->json(['status'=>0,'message'=>"Order amount must be between ".env('CURRENCY')."".$getdata->min_order_amount." and ".env('CURRENCY')."".$getdata->max_order_amount.""],200);
+                        // }
 
-                        if ($getdata->max_order_amount < $request->total_order) {
-                            return response()->json(['status'=>0,'message'=>"Order amount must be between ".env('CURRENCY')."".$getdata->min_order_amount." and ".env('CURRENCY')."".$getdata->max_order_amount.""],200);
-                        }
-                            $order = Order::where(['user_id'=>Session::get('id')])->whereRaw('DATE(created_at)',$Date);
-                            print_r($order);exit;
-                            if($count>=2)
-                            {
-                                return response()->json(['status'=>0,'message'=>'You cannot order today...'],200);
-
-                            }
+                        // if ($getdata->max_order_amount < $request->total_order) {
+                        //     return response()->json(['status'=>0,'message'=>"Order amount must be between ".env('CURRENCY')."".$getdata->min_order_amount." and ".env('CURRENCY')."".$getdata->max_order_amount.""],200);
+                        // }
+                        
                             
                             // $order->join('order as o','order.user_id','=','0.user_id')
                             //      ->join('order_details as od','')
@@ -315,7 +323,8 @@ class OrderController extends Controller
                         $order->order_from ='web';
 
                         $order->save();
-
+                        $count=Cart::where('user_id',Session::get('id'))->count();
+                        Session::put('cart', $count);
                         $order_id = DB::getPdo()->lastInsertId();
                         $data=Cart::where('cart.user_id',Session::get('id'))
                         ->get();
@@ -379,7 +388,7 @@ class OrderController extends Controller
                             return response()->json(['status'=>0,'message'=>'Something went wrong while sending email Please try again...'],200);
                         }
                         
-                        Session::put('cart', $count);
+                     
 
                         session()->forget(['offer_amount','offer_code']);
                         
@@ -397,4 +406,5 @@ class OrderController extends Controller
             return redirect()->back();
         }
     }
+       }
 }

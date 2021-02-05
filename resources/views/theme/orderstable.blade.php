@@ -12,8 +12,9 @@
             <th>Order Assigned To</th>
             <th>Created at</th>
             <th>Change Order Status</th>
-            <th>Action</th>
-            <th>Delivery Time</th>
+            <th>Date</th>
+            <!-- <th>Action</th> -->
+            <!-- <th>Delivery Time</th> -->
         </tr>
     </thead>
     <tbody>
@@ -93,11 +94,11 @@
             </td>
             <td>{{$orders->delivery_time}}</td>
             <td>
-                <span>
+                <!-- <span>
                     <a data-toggle="tooltip" href="{{URL::to('admin/invoice/'.$orders->id)}}" data-original-title="View">
-                        <span class="badge badge-warning">View</span>
+                        <span class="badge badge-warning">View Order Detail</span>
                     </a>
-                </span>
+                </span> -->
             </td>
         </tr>
         <?php

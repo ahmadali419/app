@@ -18,21 +18,68 @@
             <td><?php echo e($package->package_id); ?></td>
             <td><img src='<?php echo asset("public/images/packages/".$package->image); ?>' class='img-fluid' style='max-height: 50px;'></td>
             <td><?php echo e($package->package_name); ?></td>
-            <td><?php echo e($package->package_validity); ?></td>
+            <td><?php echo e($package->package_validity); ?> days</td>
             <td><?php echo e($package->package_amount); ?></td>
             <td><?php echo e($package->created_at); ?></td>
             <td>
-                <span>
-                    <a href="#" data-toggle="tooltip" data-placement="top" onclick="GetData('<?php echo e($package->package_id); ?>')" title="" data-original-title="Edit">
-                        <span class="badge badge-success">Edit</span>
-                    </a>
-                   
+            <span>
+                <a data-toggle="modal" data-target="#edit       Package" class="badge badge-info px-2" onclick="GetData('<?php echo e($package->package_id); ?>')" style="color: #fff;">Edit</a>
+                
                 </span>
-                        <a href="#" class="badge badge-info px-2" onclick="StatusUpdate('<?php echo e($package->package_id); ?>','1')" style="color: #fff;">Delete</a>
-            </td>
+<span>
+<a href="#" class="badge badge-info px-2" onclick="StatusUpdate('<?php echo e($package->package_id); ?>','1')" style="color: #fff;">Delete</a>
+
+</span>            </td>
         </tr>
         <?php
         }
         ?>
     </tbody>
-</table><?php /**PATH D:\new-xampp\htdocs\app\resources\views/theme/packagetable.blade.php ENDPATH**/ ?>
+</table>
+<div id="edit_modal">
+    </div>  
+<script>
+function GetData(id) {
+    // alert(id);
+    $.ajax({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        url: "<?php echo e(URL::to('admin/packages/show')); ?>",
+        data: {
+            id: id
+        },
+        method: 'POST', //Post method,
+        dataType: 'html',
+        success: function(response) {
+        //   console.log(response);return;
+            $('#edit_modal').html(response);
+            $("#editPackage").modal('show');
+            // console.log(response.ResponseData[0].package_id);
+            // $('#packg_id').val(response.ResponseData[0].package_id);
+
+            // $('#getpackage_name').val(response.ResponseData[0].package_name);
+            // $('#getpackage_validity').val(response.ResponseData[0].package_validity);
+
+            // $('#getmeals').val(response.ResponseData[0].meals);
+            // $('#getfood_category').val(response.ResponseData[0].food_category);
+            // $('#getfood_name').val(response.ResponseData[0].food_name);
+
+
+
+
+
+            // $('#getcategory_name').val(response.ResponseData.category_name);
+            // $('#getis_admin').val(response.ResponseData.is_admin);
+
+            // $('.gallerys').html("<img src="+response.ResponseData.img+" class='img-fluid' style='max-height: 200px;'>");
+            // $('#old_img').val(response.ResponseData.image);
+        },
+        error: function(error) {
+
+            // $('#errormsg').show();
+        }
+    })
+}
+
+</script><?php /**PATH D:\new-xampp\htdocs\app\resources\views/theme/packagetable.blade.php ENDPATH**/ ?>

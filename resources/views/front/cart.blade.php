@@ -16,25 +16,27 @@
                     ?>
                     <div class="cart-box">
                         <div class="cart-pro-img">
-                            <img src='{{$cart["itemimage"]->image }}' alt="">
+                        <img src='{!! asset("public/images/packages/".$cart->item_image) !!}' alt="">
+
                         </div>
                         <div class="cart-pro-details">
                             <div class="cart-pro-edit">
-                                <a class="cart-pro-name">{{$cart->item_name}}</a>
+                            <input type="hidden" name="package_id" value="{{$cart->package_id}}">
+                                <a class="cart-pro-name">{{$cart->food_name}}</a>
                                 <a href="javascript:void(0)"><i class="fal fa-trash-alt" onclick="RemoveCart('{{$cart->id}}')"></i></a>
                             </div>
                             <div class="cart-pro-edit">
                                 <input type="hidden" name="max_qty" id="max_qty" value="{{$getdata->max_order_qty}}">
                                 <div class="pro-add">
-                                    <div class="value-button sub" id="decrease" onclick="qtyupdate('{{$cart->id}}','{{$cart->item_id}}','decreaseValue')" value="Decrease Value">
+                                    <!-- <div class="value-button sub" id="decrease" onclick="qtyupdate('{{$cart->id}}','{{$cart->item_id}}','decreaseValue')" value="Decrease Value">
                                         <i class="fal fa-minus-circle"></i>
-                                    </div>
-                                    <input type="number" id="number_{{$cart->id}}" name="number" value="{{$cart->qty}}" readonly="" min="1" max="10" />
-                                    <div class="value-button add" id="increase" onclick="qtyupdate('{{$cart->id}}','{{$cart->item_id}}','increase')" value="Increase Value">
+                                    </div> -->
+                                    <!-- <input type="number" id="number_{{$cart->id}}" name="number" value="{{$cart->qty}}" readonly="" min="1" max="10" /> -->
+                                    <!-- <div class="value-button add" id="increase" onclick="qtyupdate('{{$cart->id}}','{{$cart->item_id}}','increase')" value="Increase Value">
                                         <i class="fal fa-plus-circle"></i>
-                                    </div>
+                                    </div> -->
                                 </div>
-                                <p class="cart-pricing"><?php echo env('CURRENCY'); ?>{{number_format($cart->price, 2)}}</p>
+                                <p class="cart-pricing"><?php echo env('CURRENCY'); ?>{{$cart->food_description}}</p>
                             </div>
                                 
                             @if (count($cart['addons']) != 0)
@@ -241,16 +243,16 @@
         // You can access the token ID with `token.id`.
         // Get the token ID to your server-side code for use.
 
-        var order_total = parseFloat($('#order_total').val());
-        var tax = parseFloat($('#tax').val());
-        var delivery_charge = parseFloat($('#delivery_charge').val());
-        var discount_amount = parseFloat($('#discount_amount').val());
-        var paid_amount = parseFloat($('#paid_amount').val());
-        var notes = $('#notes').val();
+        // var order_total = parseFloat($('#order_total').val());
+        // var tax = parseFloat($('#tax').val());
+        // var delivery_charge = parseFloat($('#delivery_charge').val());
+        // var discount_amount = parseFloat($('#discount_amount').val());
+        // var paid_amount = parseFloat($('#paid_amount').val());
+        // var notes = $('#notes').val();
         var address = $('#address').val();
-        var promocode = $('#getpromo').val();
-        var tax_amount = $('#tax_amount').val();
-        var discount_pr = $('#discount_pr').val();
+        // var promocode = $('#getpromo').val();
+        // var tax_amount = $('#tax_amount').val();
+        // var discount_pr = $('#discount_pr').val();
         var lat = $('#lat').val();
         var lang = $('#lang').val();
         var building = $('#building').val();
@@ -271,15 +273,15 @@
             },
             url:"{{ URL::to('stripe-payment/charge') }}",
             data: {
-                order_total : paid_amount ,
-                address: address , 
-                promocode: promocode , 
-                discount_amount: discount_amount , 
-                discount_pr: discount_pr , 
-                tax : tax,
-                tax_amount : tax_amount,
-                delivery_charge : delivery_charge ,
-                notes : notes,
+                // order_total : paid_amount ,
+                // address: address , 
+                // promocode: promocode , 
+                // discount_amount: discount_amount , 
+                // discount_pr: discount_pr , 
+                // tax : tax,
+                // tax_amount : tax_amount,
+                // delivery_charge : delivery_charge ,
+                // notes : notes,
                 order_type : order_type,
                 lat : lat,
                 lang : lang,
@@ -322,8 +324,8 @@
 
     $('#customButton').on('click', function(e) {
         // Open Checkout with further options:
-        var paid_amount = parseFloat($('#paid_amount').val());
-        var order_total = parseFloat($('#order_total').val());
+        // var paid_amount = parseFloat($('#paid_amount').val());
+        // var order_total = parseFloat($('#order_total').val());
         var order_type = $("input:radio[name=cart-delivery]:checked").val();
         var address = $('#address').val();
         var lat = $('#lat').val();
@@ -407,7 +409,7 @@
                 url:"{{ URL::to('/home/checkpincode') }}",
                 data: {
                     postal_code: postal_code,
-                    order_total: order_total,
+                    // order_total: order_total,
                 },
                 method: 'POST',
                 success: function(result) {
@@ -606,7 +608,7 @@
                 url:"{{ URL::to('/home/checkpincode') }}",
                 data: {
                     postal_code: postal_code,
-                    order_total: order_total,
+                    // order_total: order_total,
                 },
                 method: 'POST',
                 success: function(result) {
@@ -624,16 +626,16 @@
                                     type: 'post',
                                     dataType: 'json',
                                     data: {
-                                        order_total : paid_amount ,
-                                        razorpay_payment_id: response.razorpay_payment_id , 
-                                        address: address , 
-                                        promocode: promocode , 
-                                        discount_amount: discount_amount , 
-                                        discount_pr: discount_pr , 
-                                        tax : tax ,
-                                        tax_amount : tax_amount ,
-                                        delivery_charge : delivery_charge ,
-                                        notes : notes,
+                                        // order_total : paid_amount ,
+                                        // razorpay_payment_id: response.razorpay_payment_id , 
+                                        // address: address , 
+                                        // promocode: promocode , 
+                                        // discount_amount: discount_amount , 
+                                        // discount_pr: discount_pr , 
+                                        // tax : tax ,
+                                        // tax_amount : tax_amount ,
+                                        // delivery_charge : delivery_charge ,
+                                        // notes : notes,
                                         order_type : order_type,
                                         lat : lat,
                                         lang : lang,
@@ -756,46 +758,39 @@
 
     function CashonDelivery() 
     {
-        var total_order = parseFloat($('#order_total').val());
-        var tax = parseFloat($('#tax').val());
-        var delivery_charge = parseFloat($('#delivery_charge').val());
-        var discount_amount = parseFloat($('#discount_amount').val());
-        var paid_amount = parseFloat($('#paid_amount').val());
-        var notes = $('#notes').val();
-        var address = $('#address').val();
-        var promocode = $('#getpromo').val();
-        var tax_amount = $('#tax_amount').val();
-        var discount_pr = $('#discount_pr').val();
+        // var total_order = parseFloat($('#order_total').val());
+        // var tax = parseFloat($('#tax').val());
+        // var delivery_charge = parseFloat($('#delivery_charge').val());
+        // var discount_amount = parseFloat($('#discount_amount').val());
+        // var paid_amount = parseFloat($('#paid_amount').val());
+        // var notes = $('#notes').val();
+        // var address = $('#address').val();
+        // var promocode = $('#getpromo').val();
+        // var tax_amount = $('#tax_amount').val();
+        // var discount_pr = $('#discount_pr').val();
         var lat = $('#lat').val();
-        var lang = $('#lang').val();
+        var package_id = $('#package_id').val();
+        // var lang = $('#lang').val();
         var postal_code = $('#postal_code').val();
         var building = $('#building').val();
         var landmark = $('#landmark').val();
         var order_type = $("input:radio[name=cart-delivery]:checked").val();
+        // alert(order_type);return;
 
-        $('#preloader').show();
+        // $('#preloader').show();
         $.ajax({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             },
             url:"{{ URL::to('/orders/cashondelivery') }}",
             data: {
-                order_total : paid_amount ,
-                total_order : total_order ,
-                address: address , 
-                promocode: promocode , 
-                discount_amount: discount_amount , 
-                discount_pr: discount_pr , 
-                tax : tax,
-                tax_amount : tax_amount,
-                delivery_charge : delivery_charge ,
-                notes : notes,
-                order_type : order_type,
-                lat : lat,
-                lang : lang,
+              
+                // lang : lang,
+                package_id:package_id,
                 postal_code : postal_code,
                 building : building,
                 landmark : landmark,
+                order_type:order_type,
             }, 
             method: 'POST',
             success: function(response) {

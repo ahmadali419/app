@@ -7,7 +7,7 @@
         <div class="product-rev-wrap">
             <div class="cat-aside">
                 
-                <h3 class="text-center">Food Category</h3>
+                <h3 class="text-center">Food Packages</h3>
                 <div class="cat-aside-wrap">
                     @foreach ($getpackages as $package)
                     <a href="{{URL::to('packages/'.$package->package_id)}}" class="cat-check border-top-no @if (request()->id == $package->package_id) active @endif">

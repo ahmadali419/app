@@ -23,7 +23,7 @@ Route::group(['namespace' => 'front'], function () {
 	Route::post('/home/checkpincode', 'HomeController@checkpincode');
 
 
-    Route::get('/product/subscribe/{id}/{days}', 'ItemController@subscribe');
+    Route::get('/package/subscribe/{id}/{days}', 'ItemController@subscribe');
     
 	Route::get('/product', 'ItemController@index');
 	Route::get('/product-details/{id}', 'ItemController@productdetails');
@@ -114,6 +114,7 @@ Route::group(['prefix' => 'admin', 'namespace' => 'admin'], function () {
 		Route::post('packages/store', [App\Http\Controllers\admin\PackagesController::class, 'store'])->name('store');
 		Route::get('packages/list', [App\Http\Controllers\admin\PackagesController::class, 'list']);
 		Route::post('packages/status', [App\Http\Controllers\admin\PackagesController::class, 'status']);
+		Route::post('packages/updatePackage', [App\Http\Controllers\admin\PackagesController::class, 'updatePackage']);
 		Route::post('packages/show', [App\Http\Controllers\admin\PackagesController::class, 'show']);
 		Route::get('packages', [App\Http\Controllers\admin\PackagesController::class, 'index']);
 		Route::get('subscirbepackages', [App\Http\Controllers\admin\PackagesSubscribeController::class, 'index']);

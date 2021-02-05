@@ -20,7 +20,8 @@ class PackagesController extends Controller
     public function show(Request $request)
     {
         $getpackages = Package::where('is_available','=','0')->get();
-        $getpackage = Package::where(['package_id'=>$request->id,'is_available'=>0])->get();
+        
+        $getpackage = Package::where(['package_id'=>$request->id,'is_available'=>'0'])->get();
         
 
        
@@ -32,9 +33,9 @@ class PackagesController extends Controller
        
                 // print_r($getabout);exit;
 
-   echo "yes";
+  
         
-       print_r($request->id);exit;
+       
     }
 
     public function packageDetails(Request $request)
@@ -54,7 +55,7 @@ class PackagesController extends Controller
 
             return view('front.package-details', compact('packages', 'getabout','subsRequest'));
 
-    //    echo "<pre>"; dd($getPackageDetail);exit;
+    //    echo "<pre>"; dd($packages);exit;
        
     }
     public function status(Request $request)

@@ -22,8 +22,8 @@
                         </button>
                     </div>
 
-                        <div class="modal-body">
-                    <form id="add_package" enctype="multipart/form-data">
+                    <div class="modal-body">
+                        <form id="add_package" enctype="multipart/form-data">
                             <span id="msg"></span>
                             @csrf
                             <input type="hidden" name="package_id" id="packg_id" value="">
@@ -77,14 +77,14 @@
                             </div>
                             <div>
                                 <h3>Food Information
-                                    
+
                                 </h3>
                             </div>
 
                             <div id="items">
 
                                 <div class="row" id="item-list">
-                                    
+
                                     <div class="col-3">
                                         <div class="form-group">
                                             <label for="image" class="col-form-label">Food Name:</label>
@@ -97,7 +97,7 @@
                                         <div class="form-group">
                                             <label for="image" class="col-form-label">Food Description:</label>
                                             <input type="text" class="form-control" name="food_description[0]"
-                                                id="food_description">
+                                                id="food_description" placeholder="2 meals,3 carbohydrate,price">
                                         </div>
                                     </div>
                                     <div class="col-3">
@@ -109,124 +109,88 @@
                                         </div>
                                     </div>
                                     <div class="col-3">
-                                    <div class="addButton mt-2">
-                                        <button type="button" class="btn btn-success btn-lg mt-4"
-                                            onclick="addItem()">+</button>
-                                    </div>
+                                        <div class="addButton mt-2">
+                                            <button type="button" class="btn btn-success btn-lg mt-4"
+                                                onclick="addItem()">+</button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
 
                             <div class="form-group">
                                 <label for="">Description:</label>
-                                <textarea name="description" id="description" cols="10" rows="5"
-                                    class="form-control"></textarea>
+                                <textarea name="description" id="description" cols="10" rows="5" class="form-control"
+                                    placeholder="2 meals,3 carbohydrate"></textarea>
                             </div>
                             <!-- <div class="gallery"></div>                 -->
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                                 <button type="button" class="btn btn-primary" id="add-package">Save</button>
                             </div>
-                    </form>
+                        </form>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Edit Category -->
-        <div class="modal fade" id="editPackage" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabeledit"
-            aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <form method="post" name="editcategory" class="editcategory" id="editcategory"
-                    enctype="multipart/form-data">
-                    @csrf
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLabeledit">Edit Category</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                                    aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <span id="emsg"></span>
-                        <div class="modal-body">
-                            <input type="hidden" class="form-control" id="id" name="id">
-                            <input type="hidden" class="form-control" id="old_img" name="old_img">
-                            <div class="form-group">
-                                <label for="category_id" class="col-form-label">Category Name:</label>
-                                <input type="text" class="form-control" id="getcategory_name" name="category_name"
-                                    placeholder="Category Name">
-                            </div>
-                            <div class="form-group">
-                                <label for="image" class="col-form-label">Select image:</label>
-                                <input type="file" class="form-control" name="image" id="image"
-                                    accept=".png, .jpg, .jpeg">
-                            </div>
-                            <div class="gallerys"></div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-primary">Update</button>
-                        </div>
-                    </div>
-                </form>
-            </div>
+            <!-- Edit Category -->
+
+
         </div>
+        <!-- row -->
+
     </div>
-</div>
-<!-- row -->
-
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-12">
-            <span id="message"></span>
-            <div class="card">
-                <div class="card-body">
-                    <h4 class="card-title">All Packages</h4>
-                    <div class="table-responsive" id="table-display">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <span id="message"></span>
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">All Packages</h4>
+                        <div class="table-responsive" id="table-display">
 
 
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 
-<!-- #/ container -->
-@endsection
-@section('script')
+    <!-- #/ container -->
+    @endsection
+    @section('script')
 
-<script>
-
-$(document).ready(function() {
-    packageTable();
-   
+    <script>
+    $(document).ready(function() {
+        packageTable();
 
 
-});
-var row =1;
-function addItem()
-{
-    let target = $('#items');
-    let html = ` <div class="row child_item-list">
+
+    });
+    var row = 1;
+
+    function addItem() {
+        let target = $('#items');
+        let html = ` <div class="row child_item-list">
                                    
                                     <div class="col-3">
                                         <div class="form-group">
                                             <label for="image" class="col-form-label">Food Name:</label>
-                                            <input type="text" class="form-control" name="food_name[0]"
+                                            <input type="text" class="form-control" name="food_name[${row}]"
                                                 id="food_name">
                                         </div>
                                     </div>
                                     <div class="col-3">
                                         <div class="form-group">
                                             <label for="image" class="col-form-label">Food Description:</label>
-                                            <input type="text" class="form-control" name="food_description[0]"
-                                                id="food_price0" >
+                                            <input type="text" class="form-control" name="food_description[${row}]"
+                                                id="food_price0" placeholder="2 meals,3 carbohydrate,price" >
                                         </div>
                                     </div>
                                     <div class="col-3">
                                         <div class="form-group">
                                             <label for="image" class="col-form-label">Image:</label>
-                                            <input type="file" class="form-control" name="food_image[0]"
+                                            <input type="file" class="form-control" name="food_image[${row}]"
                                                 id="food_image[0]">
                                             <input type="hidden" name="removeimg" id="removeimg">
                                         </div>
@@ -236,29 +200,30 @@ function addItem()
                                             onclick="removeItem(this)"><i class="fa fa-trash"></i></button>
                                     </div>
                                 </div>`;
-                                target.append(html);
-                                row++;
-}
-function removeItem(thisis){
-				
-				thisis.closest('div.child_item-list').remove();
-				
+        target.append(html);
+        row++;
+    }
+
+    function removeItem(thisis) {
+
+        thisis.closest('div.child_item-list').remove();
 
 
-			}
 
-            $('#add-package').on('click', function(event){
+    }
+
+    $('#add-package').on('click', function(event) {
         event.preventDefault();
         var form = document.getElementById('add_package');
         var form_data = new FormData(form);
         $('#preloader').show();
         $.ajax({
             headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
-            url:"{{ URL::to('admin/packages/store') }}",
-            method:"POST",
-            data:form_data,
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            url: "{{ URL::to('admin/packages/store') }}",
+            method: "POST",
+            data: form_data,
             cache: false,
             contentType: false,
             processData: false,
@@ -266,167 +231,124 @@ function removeItem(thisis){
             success: function(result) {
                 $("#preloader").hide();
                 var msg = '';
-                if(result.error.length > 0)
-                {
-                    for(var count = 0; count < result.error.length; count++)
-                    {
-                        msg += '<div class="alert alert-danger">'+result.error[count]+'</div>';
+                if (result.error.length > 0) {
+                    for (var count = 0; count < result.error.length; count++) {
+                        msg += '<div class="alert alert-danger">' + result.error[count] + '</div>';
                     }
                     $('#msg').html(msg);
-                    setTimeout(function(){
-                      $('#msg').html('');
+                    setTimeout(function() {
+                        $('#msg').html('');
                     }, 5000);
-                }
-                else
-                {
-                    msg += '<div class="alert alert-success mt-1">'+result.success+'</div>';
+                } else {
+                    msg += '<div class="alert alert-success mt-1">' + result.success + '</div>';
                     packageTable();
                     $('#message').html(msg);
                     $("#addPackage").modal('hide');
                     $("#add_package").reset();
                     $('.gallery').html('');
-                    setTimeout(function(){
-                      $('#message').html('');
-                    }, 5000);
+                    setTimeout(function() {
+                        $('#message').html('');
+                    }, 30000);
                 }
             },
         })
     });
-function packageTable() {
-    // alert('yes');return;
-    $.ajax({
-        url: "{{ URL::to('admin/packages/list') }}",
-        method: 'get',
-        success: function(data) {
-            console.log(data);
-            $('#table-display').html(data);
-            $(".zero-configuration").DataTable()
-        }
-    });
-}
-function updatePackageStatus(status, id)
-{
-    // alert(status);
-    $.ajax({
-        headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    },
-        url: "{{ URL::to('admin/packages/update') }}",
-        data: {
-                       id : id,
-                        status: status
-                    },
-                    method: 'POST',
-        success: function(response) {
-            if (response == 1) {
-                msg += `<div class="alert alert-success mt-1"> Updated Successfully!
-                        </div>`;
-                        packageTable();
-                    $('#message').html(msg);
-                              
-                        } else {
-                            // swal("Cancelled", "Something Went Wrong :(", "error");
-                        }
-                    }
-        }
-);
-}
-function StatusUpdate(id,status) {
-    swal({
-            title: "Are you sure?",
-            text: "Do you want to delete this Package Subscription?",
-            type: "warning",
-            showCancelButton: true,
-            confirmButtonClass: "btn-danger",
-            confirmButtonText: "Yes, delete it!",
-            cancelButtonText: "No, cancel plz!",
-            closeOnConfirm: false,
-            closeOnCancel: false,
-            showLoaderOnConfirm: true,
-        },
-        function(isConfirm) {
-            if (isConfirm) {
-                $.ajax({
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    },
-                    url: "{{ URL::to('admin/packages/status') }}",
-                    data: {
-                        id: id,
-                        status: status
-                    },
-                    method: 'POST',
-                    success: function(response) {
-                        
-                        if (response == 1) {
-                            swal({
-                                    title: "Approved!",
-                                    text: "Package has been deleted.",
-                                    type: "success",
-                                    showCancelButton: true,
-                                    confirmButtonClass: "btn-danger",
-                                    confirmButtonText: "Ok",
-                                    closeOnConfirm: false,
-                                    showLoaderOnConfirm: true,
-                                },
-                                function(isConfirm) {
-                                    if (isConfirm) {
-                                        swal.close();
-                                        packageTable();
-                                    }
-                                });
-                        } else {
-                            swal("Cancelled", "Something Went Wrong :(", "error");
-                        }
-                    },
-                    error: function(e) {
-                        swal("Cancelled", "Something Went Wrong :(", "error");
-                    }
-                });
-            } else {
-                swal("Cancelled", "Your record is safe :)", "error");
+
+    function packageTable() {
+        // alert('yes');return;
+        $.ajax({
+            url: "{{ URL::to('admin/packages/list') }}",
+            method: 'get',
+            success: function(data) {
+                console.log(data);
+                $('#table-display').html(data);
+                $(".zero-configuration").DataTable()
             }
         });
-}
+    }
 
-function GetData(id) {
-    $.ajax({
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        },
-        url: "{{ URL::to('admin/packages/show') }}",
-        data: {
-            id: id
-        },
-        method: 'POST', //Post method,
-        dataType: 'json',
-        success: function(response) {
-            $("#addPackage").modal('show');
-            // console.log(response.ResponseData[0].package_id);
-            $('#packg_id').val(response.ResponseData[0].package_id);
+    function updatePackageStatus(status, id) {
+        // alert(status);
+        $.ajax({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            url: "{{ URL::to('admin/packages/update') }}",
+            data: {
+                id: id,
+                status: status
+            },
+            method: 'POST',
+            success: function(response) {
+                if (response == 1) {
+                    msg += `<div class="alert alert-success mt-1"> Updated Successfully!
+                        </div>`;
+                    packageTable();
+                    $('#message').html(msg);
 
-            $('#getpackage_name').val(response.ResponseData[0].package_name);
-            $('#getpackage_validity').val(response.ResponseData[0].package_validity);
+                } else {
+                    // swal("Cancelled", "Something Went Wrong :(", "error");
+                }
+            }
+        });
+    }
 
-            $('#getmeals').val(response.ResponseData[0].meals);
-            $('#getfood_category').val(response.ResponseData[0].food_category);
-            $('#getfood_name').val(response.ResponseData[0].food_name);
+    function StatusUpdate(id, status) {
+        swal({
+                title: "Are you sure?",
+                text: "Do you want to delete this Package Subscription?",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonClass: "btn-danger",
+                confirmButtonText: "Yes, delete it!",
+                cancelButtonText: "No, cancel plz!",
+                closeOnConfirm: false,
+                closeOnCancel: false,
+                showLoaderOnConfirm: true,
+            },
+            function(isConfirm) {
+                if (isConfirm) {
+                    $.ajax({
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        url: "{{ URL::to('admin/packages/status') }}",
+                        data: {
+                            id: id,
+                            status: status
+                        },
+                        method: 'POST',
+                        success: function(response) {
 
-
-
-
-
-            // $('#getcategory_name').val(response.ResponseData.category_name);
-            // $('#getis_admin').val(response.ResponseData.is_admin);
-
-            // $('.gallerys').html("<img src="+response.ResponseData.img+" class='img-fluid' style='max-height: 200px;'>");
-            // $('#old_img').val(response.ResponseData.image);
-        },
-        error: function(error) {
-
-            // $('#errormsg').show();
-        }
-    })
-}
-</script>
-@endsection
+                            if (response == 1) {
+                                swal({
+                                        title: "Approved!",
+                                        text: "Package has been deleted.",
+                                        type: "success",
+                                        showCancelButton: true,
+                                        confirmButtonClass: "btn-danger",
+                                        confirmButtonText: "Ok",
+                                        closeOnConfirm: false,
+                                        showLoaderOnConfirm: true,
+                                    },
+                                    function(isConfirm) {
+                                        if (isConfirm) {
+                                            swal.close();
+                                            packageTable();
+                                        }
+                                    });
+                            } else {
+                                swal("Cancelled", "Something Went Wrong :(", "error");
+                            }
+                        },
+                        error: function(e) {
+                            swal("Cancelled", "Something Went Wrong :(", "error");
+                        }
+                    });
+                } else {
+                    swal("Cancelled", "Your record is safe :)", "error");
+                }
+            });
+    }
+    </script>
+    @endsection

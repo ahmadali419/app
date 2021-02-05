@@ -50,9 +50,9 @@
         <h2 class="sec-head">Subcribe Packages</h2>
         <div id="sync2" class="owl-carousel owl-theme">
             <?php $i=1; ?>
-            <?php $__currentLoopData = $getcategory; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $category): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+            <?php $__currentLoopData = $getpackage; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $package): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
             <div class="item product-tab">
-                <img src='<?php echo asset("public/images/category/".$category->image); ?>' alt=""> <?php echo e($category->category_name); ?>
+            <img src='<?php echo asset("public/images/slider/".$slider->image); ?>' alt=""> <?php echo e($package->package_name); ?>
 
             </div>
             <?php $i++; ?>
@@ -60,50 +60,41 @@
         </div>
         <div id="sync1" class="owl-carousel owl-theme">
             <?php $i=1; ?>
-            <?php $__currentLoopData = $getcategory; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $category): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+            <?php $__currentLoopData = $getpackage; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $package): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
             <div class="item">
                 <div class="tab-pane">
                     <div class="row">
                    
-                        <?php $__currentLoopData = $getitem; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                        <?php if($item->cat_id==$category->id): ?>
+                       
+                  
                         <div class="col-lg-4 col-md-6">
                             <div class="pro-box">
                                 <div class="pro-img">
-                                    <a href="<?php echo e(URL::to('/signin')); ?>">
-                                        <img src='<?php echo e($item["itemimage"]->image); ?>' alt="">
+                                    <a href="<?php echo e(URL::to('package-details/'.$package->package_id)); ?>">
+                                    <img src='<?php echo asset("public/images/slider/".$slider->image); ?>' alt="">
                                     </a>
-                                    <?php if(Session::get('id')): ?>
-                                        <?php if($item->is_favorite == 1): ?>
-                                            <i class="fas fa-heart i"></i>
-                                        <?php else: ?>
-                                            <i class="fal fa-heart i" onclick="MakeFavorite('<?php echo e($item->id); ?>','<?php echo e(Session::get('id')); ?>')"></i>
-                                        <?php endif; ?>
-                                    <?php else: ?>
-                                        <a class="i" href="<?php echo e(URL::to('/signin')); ?>"><i class="fal fa-heart"></i></a>
-                                    <?php endif; ?>
+                                  
                                 </div>
                                 <div class="product-details-wrap">
                                     <div class="product-details">
-                                        <a href="<?php echo e(URL::to('product-details/'.$item->id)); ?>">
-                                            <h4><?php echo e($item->item_name); ?></h4>
+                                        <a href="<?php echo e(URL::to('package-details/'.$package->package_id)); ?>">
+                                            <h4><?php echo e($package->package_name); ?></h4>
                                         </a>
-                                        <p class="pro-pricing"><?php echo env('CURRENCY'); ?><?php echo e(number_format($item->item_price, 2)); ?></p>
+                                        <p class="pro-pricing"><?php echo env('CURRENCY'); ?><?php echo e(number_format($package->package_amount, 2)); ?></p>
                                     </div>
                                     <div class="product-details">
-                                        <p><?php echo e(Str::limit($item->item_description, 60)); ?></p>
+                                        <p><?php echo e(Str::limit($package->package_description, 60)); ?></p>
                                     </div>
                                     <div class="float-right">
-                                    <!-- <a class="btn btn-success btn-sm mt-3" href="<?php echo e(URL::to('/signin')); ?>">Subscribe</a> -->
+                                    <a class="btn btn-success btn-sm mt-3" href="<?php echo e(URL::to('package-details/'.$package->package_id)); ?>">View More</a>
                                       <!-- <button class="btn btn-success btn-sm mt-3" >Subscribe</button> -->
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <?php endif; ?>
-                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                        
                     </div>
-                    <a href="<?php echo e(URL::to('product/')); ?>" class="btn">View More</a>
+                    <a href="<?php echo e(URL::to('packages/'.$package->package_id)); ?>" class="btn">View More</a>
                 </div>
             </div>
             <?php $i++; ?>

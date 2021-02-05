@@ -49,59 +49,50 @@
         <h2 class="sec-head">Subcribe Packages</h2>
         <div id="sync2" class="owl-carousel owl-theme">
             <?php $i=1; ?>
-            @foreach ($getcategory as $category)
+            @foreach ($getpackage as $package)
             <div class="item product-tab">
-                <img src='{!! asset("public/images/category/".$category->image) !!}' alt=""> {{$category->category_name}}
+            <img src='{!! asset("public/images/slider/".$slider->image) !!}' alt=""> {{$package->package_name}}
             </div>
             <?php $i++; ?>
             @endforeach
         </div>
         <div id="sync1" class="owl-carousel owl-theme">
             <?php $i=1; ?>
-            @foreach($getcategory as $category)
+            @foreach($getpackage as $package)
             <div class="item">
                 <div class="tab-pane">
                     <div class="row">
                    
-                        @foreach($getitem as $item)
-                        @if($item->cat_id==$category->id)
+                       
+                  
                         <div class="col-lg-4 col-md-6">
                             <div class="pro-box">
                                 <div class="pro-img">
-                                    <a href="{{URL::to('/signin')}}">
-                                        <img src='{{$item["itemimage"]->image }}' alt="">
+                                    <a href="{{URL::to('package-details/'.$package->package_id)}}">
+                                    <img src='{!! asset("public/images/slider/".$slider->image) !!}' alt="">
                                     </a>
-                                    @if (Session::get('id'))
-                                        @if ($item->is_favorite == 1)
-                                            <i class="fas fa-heart i"></i>
-                                        @else
-                                            <i class="fal fa-heart i" onclick="MakeFavorite('{{$item->id}}','{{Session::get('id')}}')"></i>
-                                        @endif
-                                    @else
-                                        <a class="i" href="{{URL::to('/signin')}}"><i class="fal fa-heart"></i></a>
-                                    @endif
+                                  
                                 </div>
                                 <div class="product-details-wrap">
                                     <div class="product-details">
-                                        <a href="{{URL::to('product-details/'.$item->id)}}">
-                                            <h4>{{$item->item_name}}</h4>
+                                        <a href="{{URL::to('package-details/'.$package->package_id)}}">
+                                            <h4>{{$package->package_name}}</h4>
                                         </a>
-                                        <p class="pro-pricing"><?php echo env('CURRENCY'); ?>{{number_format($item->item_price, 2)}}</p>
+                                        <p class="pro-pricing"><?php echo env('CURRENCY'); ?>{{number_format($package->package_amount, 2)}}</p>
                                     </div>
                                     <div class="product-details">
-                                        <p>{{ Str::limit($item->item_description, 60) }}</p>
+                                        <p>{{ Str::limit($package->package_description, 60) }}</p>
                                     </div>
                                     <div class="float-right">
-                                    <!-- <a class="btn btn-success btn-sm mt-3" href="{{URL::to('/signin')}}">Subscribe</a> -->
+                                    <a class="btn btn-success btn-sm mt-3" href="{{URL::to('package-details/'.$package->package_id)}}">View More</a>
                                       <!-- <button class="btn btn-success btn-sm mt-3" >Subscribe</button> -->
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        @endif
-                        @endforeach
+                        
                     </div>
-                    <a href="{{URL::to('product/')}}" class="btn">View More</a>
+                    <a href="{{URL::to('packages/'.$package->package_id)}}" class="btn">View More</a>
                 </div>
             </div>
             <?php $i++; ?>

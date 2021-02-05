@@ -12,4 +12,7 @@ class Cart extends Model
     public function itemimage(){
         return $this->hasOne('App\ItemImages','item_id','item_id')->select('item_images.id','item_images.item_id',\DB::raw("CONCAT('".url('/public/images/item/')."/', item_images.image) AS image"));
     }
+    public function Packages(){
+        return $this->hasMany(PackageCategory::class,"package_id","package_id");
+    }
 }

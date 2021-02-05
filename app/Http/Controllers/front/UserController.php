@@ -113,10 +113,13 @@ class UserController extends Controller
                 $email=$request->email;
                 $data=['title'=>$title,'email'=>$email,'otp'=>$otp];
 
-                Mail::send('Email.emailverification',$data,function($message)use($data){
-                    $message->from(env('MAIL_USERNAME'))->subject($data['title']);
-                    $message->to($data['email']);
-                } );
+               if( Mail::send('Email.emailverification',$data,function($message)use($data){
+                $message->from(env('MAIL_USERNAME'))->subject($data['title']);
+                $message->to($data['email']);
+            } ))
+            {
+                echo "yes";exit;
+            }
 
                 $user = new User;
                 $user->name =$request->name;

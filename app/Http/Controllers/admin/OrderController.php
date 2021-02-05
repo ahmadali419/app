@@ -11,6 +11,8 @@ use App\Item;
 use App\Addons;
 use App\User;
 use App\OrderDetails;
+use App\Package;
+
 
 use Validator;
 
@@ -24,6 +26,7 @@ class OrderController extends Controller
     public function index()
     {
         $getorders = Order::with('users')->select('order.*','users.name')->leftJoin('users', 'order.driver_id', '=', 'users.id')->where('order.created_at','LIKE','%' .date("Y-m-d") . '%')->get();
+       
         $getdriver = User::where('type','3')->get();
         // dd($getorders);
         return view('orders',compact('getorders','getdriver'));
@@ -59,11 +62,23 @@ class OrderController extends Controller
     public function invoice(Request $request)
     {
         $getusers = Order::with('users')->where('order.id', $request->id)->get()->first();
-        $getorders=OrderDetails::with('itemimage')->select('order_details.id','order_details.qty','order_details.price as total_price','item.id','item.item_name','item.item_price','order_details.item_id','order_details.addons_id','order_details.item_notes')
-        ->join('item','order_details.item_id','=','item.id')
-        ->join('order','order_details.order_id','=','order.id')
-        ->where('order_details.order_id',$request->id)->get();
+        $getorders = $getusers->join('order','order.id','=','order.id')
+         ->join('order_detail as od','od.order_id','=','order.id')
+         ->select('od.*')
+         ->get();
 
+        // $getorders=Order::with('orderDetail')->withCount("orderDetail")->get();
+        // $getpackages = OrderDetails::with('packages')
+        // ->join('packages','order_details.item_id','=','packages.package_id')
+        // ->join('order','order_details.order_id','=','order.id')
+        // ->where('order_details.order_id',$request->id)->get();
+        // $getabout = About::where('id','=','1')->first();
+    //    echo "<pre>"; print_r($getorders);exit;
+    //     $getorders=OrderDetails::with('packages')->select('order_details.id',DB::raw('DATE_FORMAT(order_details.created_at, "%d %M %Y") as date'),'packages.package_name','order_details.addons_id','packages.package_name','packages.package_amount')
+    //     ->join('packages','order_details.item_id','=','packages.package_id')
+    //     // ->join('order','order_details.order_id','=','order.id')
+    //     ->where('order_details.order_id',$request->id)->get();
+    //   dd($getorders->toArray());
         if(count($getorders) == 0){ 
             abort(404); 
         } else {

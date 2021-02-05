@@ -30,11 +30,21 @@ class HomeController extends Controller
         
         $getslider = Slider::all();
                      $getpackages =    new Package;
-        $getpackage = $getpackages->limit('5')->get();
-        // print_r($getslider);exit
+                     $user_id  = Session::get('id');
+        $getpackage = $getpackages->limit('5')->where(['is_available'=>0])->get();
+        // dd($getpackage);
+        $getSubscribepackages = $getpackages->join('subscription_request as sr', 'sr.user_id','=','sr.user_id')
+        ->join('users as u','u.id','=','sr.user_id')
+        ->join('packages as p','p.package_id','=','sr.product_id')
+        ->select('sr.*', 'u.*','p.*')
+        ->where(['sr.user_id'=>$user_id,'status'=>'Request Approved'])
+        ->orderBy('sr.id', 'asc')
+        ->groupBy('sr.id')
+        ->get();
+    //   dd($getSubscribepackages);exit;
         $getcategory = Category::where('is_available','=','1')->get();
         $getabout = About::where('id','=','1')->first();
-        $user_id  = Session::get('id');
+        
         $getitem = Item::with(['category','itemimage'])->select('item.cat_id','item.id','item.item_name','item.item_price','item.item_description',DB::raw('(case when favorite.item_id is null then 0 else 1 end) as is_favorite'))
         ->leftJoin('favorite', function($query) use($user_id) {
             $query->on('favorite.item_id','=','item.id')
@@ -45,7 +55,7 @@ class HomeController extends Controller
         $getreview = Ratting::with('users')->get();
 
         $getbanner = Banner::orderby('id','desc')->get();
-        return view('front.home', compact('getslider','getcategory','getpackage','getabout','getitem','getreview','getbanner'));
+        return view('front.home', compact('getslider','getcategory','getSubscribepackages','getpackage','getabout','getitem','getreview','getbanner'));
     }
 
     public function contact(Request $request)
